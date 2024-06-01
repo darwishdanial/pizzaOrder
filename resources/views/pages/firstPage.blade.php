@@ -18,7 +18,6 @@
                         <a class="btn btn-outline-primary slider-btn animated" href="{{ route('order') }}">Order
                             now</a>
                     </div>
-                    
                 </div>
             </div>
         </div>

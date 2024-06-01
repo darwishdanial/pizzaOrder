@@ -65,15 +65,15 @@
                         <div class="product-details-size clearfix">
                             <select class="nice-select nice-select-style-1" name="pepperoni" required>
                                 <option value="" disabled selected>Select Pepperoni</option>
-                                <option value="Yes">Yes</option>
+                                <option value="Pepperoni">Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
                         <div class="product-details-size clearfix">
                             <select class="nice-select nice-select-style-1" name="cheese" required>
                                 <option value="" disabled selected>Select Cheese</option>
-                                <option value="Normal">Normal</option>
-                                <option value="Extra">Extra</option>
+                                <option value="Normal Cheese">Normal</option>
+                                <option value="Extra Cheese">Extra</option>
                             </select>
                         </div>
                         <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
@@ -91,7 +91,7 @@
                             <a href="{{ route('cart') }}">View cart</a>
                         </div>
                     </div>
-                    <p data-aos="fade-up" data-aos-delay="300">+{{$totalPizza}} Pizza has been added to cart</p>
+                    <p data-aos="fade-up" data-aos-delay="300">+{{$pizzaQty}} Pizza has been added to cart</p>
                     
                     
                 </div>
