@@ -56,15 +56,15 @@
                                             <td class="product-name">
                                                 <h5>{{ $pizza->name }}</h5>
                                             </td>
-                                            <td class="product-price"><span class="amount">RM15</span></td>
+                                            <td class="product-price"><span class="amount">RM {{ $pizza->price / $pizza->qty }}</span></td>
                                             <td class="cart-quality">
                                                 <div class="product-quality">
-                                                    <input class="cart-plus-minus-box input-text qty text" name="quantity" value="{{ $pizza->qty }}" type="number" min="0">
+                                                    <input class="cart-plus-minus-box input-text qty text" name="quantity[{{ $pizza->id }}]" value="{{ $pizza->qty }}" type="number" min="0">
                                                 </div>
                                             </td>
                                             <td class="product-total"><span>RM {{ $pizza->price }}</span></td>
                                             <td class="product-remove">
-                                                <a href="#" onclick="removeProduct(0)"><i class="las la-trash"></i></a>
+                                                <a href="#" onclick="removeProduct({{ $pizza->id }})"><i class="las la-trash"></i></a>
                                             </td>
                                         </tr>
 
@@ -108,7 +108,7 @@
     function removeProduct(index) {
         // Set the value of the corresponding quantity input field to 0
         // document.querySelector('input[name="quantity' + index + '"]').value = 0;
-        document.querySelector('input[name="quantity"]').value = 0;
+        document.querySelector('input[name="quantity[' + index + ']"]').value = 0;
     }
 </script>
 

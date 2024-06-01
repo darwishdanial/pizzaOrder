@@ -31,29 +31,14 @@
     </div>
 </div>
 
-@if (!isset($pizzaQty) || empty($pizzaQty))
+@if ($pizzaOrder->isEmpty())
 <div class="checkout-main-area pb-130">
     <div class="container">
                 <div class="col-lg-5">
                     <div class="your-order-area">
-                        <h3>Thank you for ordering with Pizza Haven</h3>   
+                        <h3>No orders. Continue ordering</h3>   
                         <div class="Place-order">
                             <a href="{{ route('firstPage') }}">Home</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@elseif(array_sum($pizzaQty) == 0)
-<div class="checkout-main-area pb-130">
-    <div class="container">
-                <div class="col-lg-5">
-                    <div class="your-order-area">
-                        <h3>No orders. Continue ordering </h3>   
-                        <div class="Place-order">
-                            <a href="{{ route('order') }}">Order Pizza</a>
                         </div>
                     </div>
                 </div>
@@ -77,9 +62,9 @@
                                 <div class="your-order-middle">
 
                                     <ul>
-                                        @foreach ($pizzaQty as $index => $quantity)
-                                            @if ($quantity > 0)
-                                                <li>{{ $pizzaName[$index] }} X {{ $quantity }} <span>RM{{ $quantity * $pizzaPrice[$index] }}</span></li>
+                                        @foreach ($pizzaOrder as $pizza)
+                                            @if ($pizza->qty > 0)
+                                                <li>{{ $pizza->name }} X {{ $pizza->price / $pizza->qty }} <span>RM{{ $pizza->price }}</span></li>
                                             @endif
                                         @endforeach
                                     </ul>

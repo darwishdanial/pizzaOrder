@@ -61,19 +61,28 @@ class firstPageController extends Controller
     }
 
     public function checkout(){
-        $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
+        // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
 
+        // $totalPrice = 0;
+        // foreach ($pizzaQty as $index => $quantity) {
+        //     $totalPrice += $quantity * $this->pizzaPrice[$index];
+        // }
+
+        $pizzaOrder = order::all();
         $totalPrice = 0;
-        foreach ($pizzaQty as $index => $quantity) {
-            $totalPrice += $quantity * $this->pizzaPrice[$index];
+        foreach($pizzaOrder as $pizza){
+            $totalPrice += $pizza->price;
         }
 
-        return view('pages.checkoutPage', ['pizzaQty' => $pizzaQty, 'pizzaName' => $this->pizzaName, 'pizzaPrice' => $this->pizzaPrice, 'totalPrice' => $totalPrice]);
+        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
     }
 
     public function clearItem(){
-        Session::forget('pizzaQty');
-        return view('pages.checkoutPage');
+        // Session::forget('pizzaQty');
+        order::truncate();
+        $pizzaOrder = order::all();
+        $totalPrice = 0;
+        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
     }
 
     public function addToCart(Request $request) {
@@ -91,22 +100,34 @@ class firstPageController extends Controller
             $pizzaName = $size.' '.$pepperoni.' '.$cheese;
         }
 
-        foreach($this->pizzas as $pizza){
-            if($pizza["name"] == $pizzaName){
-                $price = $pizza["price"] * $quantity;
+        // Check if a pizza with the same name already exists in the database
+        $order = Order::where('name', $pizzaName)->first();
+
+        foreach ($this->pizzas as $pizza) {
+            if ($pizza["name"] == $pizzaName) {
+                $price = $pizza["price"];
                 break;
             }
         }
 
-        $order = new order([
-            'name' => $pizzaName,
-            'qty' => $quantity,
-            'price' => $price,
-        ]);
+        if ($order) {
+            // If the pizza already exists, update its quantity
+            $tempqty = $order->qty;
+            $tempqty += $quantity;
+            $order->qty = $tempqty;
+            $order->price = $price * $tempqty;
+            $order->save();
 
-        $order->save();
+        } else {
+            $order = new Order([
+                'name' => $pizzaName,
+                'qty' => $quantity,
+                'price' => $price * $quantity,
+            ]);
 
-        var_dump($pizzaName);
+            $order->save();
+        }
+
 
         // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
 
@@ -142,29 +163,42 @@ class firstPageController extends Controller
         return redirect()->route('order');
     }
 
-    public function updateCart(Request $request) {
+    public function updateCart(Request $request)
+    {
+        // Retrieve all input values from the form
+        $quantities = $request->input('quantity');
 
-        // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
+        // Loop through each pizza quantity and update the database
+        foreach ($quantities as $pizzaId => $quantity) {
 
-        // $pizzaQty[0] = $request->input('quantity0') ?? 0;
-        // $pizzaQty[1] = $request->input('quantity1') ?? 0;
-        // $pizzaQty[2] = $request->input('quantity2') ?? 0;
-        // $pizzaQty[3] = $request->input('quantity3') ?? 0;
-        // $pizzaQty[4] = $request->input('quantity4') ?? 0;
-        // $pizzaQty[5] = $request->input('quantity5') ?? 0;
-        // $pizzaQty[6] = $request->input('quantity6') ?? 0;
-        // $pizzaQty[7] = $request->input('quantity7') ?? 0;
-        // $pizzaQty[8] = $request->input('quantity8') ?? 0;
-        // $pizzaQty[9] = $request->input('quantity9') ?? 0;
-        // $pizzaQty[10] = $request->input('quantity10') ?? 0;
-        // $pizzaQty[11] = $request->input('quantity11') ?? 0;
+            // Find the pizza order by ID
+            $order = order::findOrFail($pizzaId);
 
-        // session(['pizzaQty' => $pizzaQty]);
+            if($quantity == 0){
+                $order->delete();
+            }else{
 
-        $pizzaQty = $request->input('quantity');
+                $price = 0;
 
-        // Redirect back to the cart page after updating the cart
-        return redirect()->route('cart');
+                foreach($this->pizzas as $pizza){
+                    if($pizza["name"] == $order->name){
+                        $price = $pizza["price"] * $quantity;
+                        break;
+                    }
+                }
+
+                // Update the quantity
+                $order->qty = $quantity;
+                $order->price = $price;
+                
+                // Save the changes
+                $order->save();
+            }
+            
+        }
+
+        // Redirect back to the cart page or wherever you want
+        return redirect()->route('cart')->with('success', 'Cart updated successfully!');
     }
 }
 
