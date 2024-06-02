@@ -43,13 +43,15 @@ class firstPageController extends Controller
     public function order(){
 
         $pizzaOrder = order::all();
-        $pizzaQty = 0;
+        // $pizzaQty = 0;
 
-        foreach($pizzaOrder as $pizza){
-            $pizzaQty += $pizza->qty;
-        }
+        // foreach($pizzaOrder as $pizza){
+        //     $pizzaQty += $pizza->qty;
+        // }
         // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
         // $totalPizza = array_sum($pizzaQty);
+
+        $pizzaQty = $pizzaOrder->sum('qty');
         return view('pages.orderPage',['pizzaQty' => $pizzaQty]);
     }
 
@@ -88,119 +90,62 @@ class firstPageController extends Controller
 
     public function addToCart(Request $request) {
 
-        $size = $request->input('size');
-        $pepperoni = $request->input('pepperoni');
-        $cheese = $request->input('cheese');
-        $quantity = $request->input('quantity');
-        $price=0;
-        $pizzaName = '';
+        if ($request->ajax()) {
 
-        if ($pepperoni == "No") {
-            $pizzaName = $size.' '.$cheese;
-        }else{
-            $pizzaName = $size.' '.$pepperoni.' '.$cheese;
-        }
+            $size = $request->input('size');
+            $pepperoni = $request->input('pepperoni');
+            $cheese = $request->input('cheese');
+            $quantity = $request->input('quantity');
+            $price=0;
+            $pizzaName = '';
 
-        // Check if a pizza with the same name already exists in the database
-        $order = Order::where('name', $pizzaName)->first();
-
-        foreach ($this->pizzas as $pizza) {
-            if ($pizza["name"] == $pizzaName) {
-                $price = $pizza["price"];
-                break;
+            if ($pepperoni == "No") {
+                $pizzaName = $size.' '.$cheese;
+            }else{
+                $pizzaName = $size.' '.$pepperoni.' '.$cheese;
             }
-        }
 
-        if ($order) {
-            // If the pizza already exists, update its quantity
-            $tempqty = $order->qty;
-            $tempqty += $quantity;
-            $order->qty = $tempqty;
-            $order->price = $price * $tempqty;
-            $order->save();
+            // Check if a pizza with the same name already exists in the database
+            $order = Order::where('name', $pizzaName)->first();
 
-        } else {
-            $order = new Order([
-                'name' => $pizzaName,
-                'qty' => $quantity,
-                'price' => $price * $quantity,
+            foreach ($this->pizzas as $pizza) {
+                if ($pizza["name"] == $pizzaName) {
+                    $price = $pizza["price"];
+                    break;
+                }
+            }
+
+            if ($order) {
+                // If the pizza already exists, update its quantity
+                $tempqty = $order->qty;
+                $tempqty += $quantity;
+                $order->qty = $tempqty;
+                $order->price = $price * $tempqty;
+                $order->save();
+
+            } else {
+                $order = new Order([
+                    'name' => $pizzaName,
+                    'qty' => $quantity,
+                    'price' => $price * $quantity,
+                ]);
+
+                $order->save();
+            }
+
+            $pizzaOrder = order::all();
+            $pizzaQty = $pizzaOrder->sum('qty');
+
+            return response()->json([
+                'success' => true,
+                'qty' => $pizzaQty,
+                'message' => 'Cart updated successfully!',
             ]);
 
-            $order->save();
         }
-
-
-        // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
-
-        // if ($size == 'Small' && $pepperoni == 'No' && $cheese == 'Normal') {
-        //     $pizzaQty[0] += $quantity;
-        // } else if ($size == 'Small' && $pepperoni == 'No' && $cheese == 'Extra') {
-        //     $pizzaQty[1] += $quantity;
-        // } else if ($size == 'Small' && $pepperoni == 'Yes' && $cheese == 'Normal') {
-        //     $pizzaQty[2] += $quantity;
-        // } else if ($size == 'Small' && $pepperoni == 'Yes' && $cheese == 'Extra') {
-        //     $pizzaQty[3] += $quantity;
-        // } else if ($size == 'Medium' && $pepperoni == 'No' && $cheese == 'Normal') {
-        //     $pizzaQty[4] += $quantity;
-        // } else if ($size == 'Medium' && $pepperoni == 'No' && $cheese == 'Extra') {
-        //     $pizzaQty[5] += $quantity;
-        // } else if ($size == 'Medium' && $pepperoni == 'Yes' && $cheese == 'Normal') {
-        //     $pizzaQty[6] += $quantity;
-        // } else if ($size == 'Medium' && $pepperoni == 'Yes' && $cheese == 'Extra') {
-        //     $pizzaQty[7] += $quantity;
-        // } else if ($size == 'Large' && $pepperoni == 'No' && $cheese == 'Normal') {
-        //     $pizzaQty[8] += $quantity;
-        // } else if ($size == 'Large' && $pepperoni == 'No' && $cheese == 'Extra') {
-        //     $pizzaQty[9] += $quantity;
-        // } else if ($size == 'Large' && $pepperoni == 'Yes' && $cheese == 'Normal') {
-        //     $pizzaQty[10] += $quantity;
-        // } else if ($size == 'Large' && $pepperoni == 'Yes' && $cheese == 'Extra') {
-        //     $pizzaQty[11] += $quantity;
-        // }
-
-        // session(['pizzaQty' => $pizzaQty]);
-
         // Redirect back to the order page after adding to cart
         return redirect()->route('order');
     }
-
-    // public function updateCart(Request $request)
-    // {
-    //     // Retrieve all input values from the form
-    //     $quantities = $request->input('quantity');
-
-    //     // Loop through each pizza quantity and update the database
-    //     foreach ($quantities as $pizzaId => $quantity) {
-
-    //         // Find the pizza order by ID
-    //         $order = order::findOrFail($pizzaId);
-
-    //         if($quantity == 0){
-    //             $order->delete();
-    //         }else{
-
-    //             $price = 0;
-
-    //             foreach($this->pizzas as $pizza){
-    //                 if($pizza["name"] == $order->name){
-    //                     $price = $pizza["price"] * $quantity;
-    //                     break;
-    //                 }
-    //             }
-
-    //             // Update the quantity
-    //             $order->qty = $quantity;
-    //             $order->price = $price;
-                
-    //             // Save the changes
-    //             $order->save();
-    //         }
-            
-    //     }
-
-    //     // Redirect back to the cart page or wherever you want
-    //     return redirect()->route('cart')->with('success', 'Cart updated successfully!');
-    // }
 
     public function updateCart(Request $request)
     {

@@ -51,7 +51,7 @@
                     </div>
                     <h2 data-aos="fade-up" data-aos-delay="300">PIZZA</h2>
 
-                    <form method="POST" action="{{ route('add.cart') }}">
+                    <form id="add-cart-form" method="POST" action="{{ route('add.cart') }}">
                         @csrf
 
                         <div class="product-details-size clearfix">
@@ -91,7 +91,7 @@
                             <a href="{{ route('cart') }}">View cart</a>
                         </div>
                     </div>
-                    <p data-aos="fade-up" data-aos-delay="300">+{{$pizzaQty}} Pizza has been added to cart</p>
+                    <p id="total-pizza" data-aos="fade-up" data-aos-delay="300">+{{$pizzaQty}} Pizza has been added to cart</p>
                     
                     
                 </div>
@@ -153,6 +153,28 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#add-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("add.cart") }}',
+                data: $(this).serialize(),      //to send normal form submission
+                success: function(response) {
+                    // alert(response.message);
+                    $('#total-pizza').text('+' + response.qty + ' Pizza has been added to cart');
+                },
+                error: function(response) {
+                    alert('An error occurred while updating the cart.');
+                }
+            });
+        });
+    });
+
+</script>
 
 
 </html>

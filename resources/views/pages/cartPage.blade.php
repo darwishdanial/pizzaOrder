@@ -121,7 +121,7 @@
                 url: '{{ route("update.cart") }}',
                 data: $(this).serialize(),      //to send normal form submission
                 success: function(response) {
-                    alert(response.message);
+                    // alert(response.message);
 
                     response.orders.forEach(function(order) {
                         const pricePerUnit = (order.price / order.qty);
@@ -150,7 +150,7 @@
                     }
                 },
                 success: function(response) {
-                    alert('Product removed successfully!');
+                    // alert('Product removed successfully!');
                     $('#product-row-' + productId).remove();
                     // Optionally, update the page content based on the response
                 },
