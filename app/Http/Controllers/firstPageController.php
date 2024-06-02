@@ -22,7 +22,7 @@ class firstPageController extends Controller
         ['name' => 'Medium Normal Cheese', 'price' => 22],
         ['name' => 'Medium Extra Cheese', 'price' => 28],
         ['name' => 'Medium Pepperoni Normal Cheese', 'price' => 27],
-        ['name' => 'Medium Pepperoni Cheese', 'price' => 33],
+        ['name' => 'Medium Pepperoni Extra Cheese', 'price' => 33],
         ['name' => 'Large Normal Cheese', 'price' => 30],
         ['name' => 'Large Extra Cheese', 'price' => 36],
         ['name' => 'Large Pepperoni Normal Cheese', 'price' => 37],
@@ -69,10 +69,11 @@ class firstPageController extends Controller
         // }
 
         $pizzaOrder = order::all();
-        $totalPrice = 0;
-        foreach($pizzaOrder as $pizza){
-            $totalPrice += $pizza->price;
-        }
+        // $totalPrice = 0;
+        // foreach($pizzaOrder as $pizza){
+        //     $totalPrice += $pizza->price;
+        // }
+        $totalPrice = $pizzaOrder->sum('price');
 
         return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
     }
@@ -91,7 +92,7 @@ class firstPageController extends Controller
         $pepperoni = $request->input('pepperoni');
         $cheese = $request->input('cheese');
         $quantity = $request->input('quantity');
-        $price='';
+        $price=0;
         $pizzaName = '';
 
         if ($pepperoni == "No") {
@@ -163,41 +164,94 @@ class firstPageController extends Controller
         return redirect()->route('order');
     }
 
+    // public function updateCart(Request $request)
+    // {
+    //     // Retrieve all input values from the form
+    //     $quantities = $request->input('quantity');
+
+    //     // Loop through each pizza quantity and update the database
+    //     foreach ($quantities as $pizzaId => $quantity) {
+
+    //         // Find the pizza order by ID
+    //         $order = order::findOrFail($pizzaId);
+
+    //         if($quantity == 0){
+    //             $order->delete();
+    //         }else{
+
+    //             $price = 0;
+
+    //             foreach($this->pizzas as $pizza){
+    //                 if($pizza["name"] == $order->name){
+    //                     $price = $pizza["price"] * $quantity;
+    //                     break;
+    //                 }
+    //             }
+
+    //             // Update the quantity
+    //             $order->qty = $quantity;
+    //             $order->price = $price;
+                
+    //             // Save the changes
+    //             $order->save();
+    //         }
+            
+    //     }
+
+    //     // Redirect back to the cart page or wherever you want
+    //     return redirect()->route('cart')->with('success', 'Cart updated successfully!');
+    // }
+
     public function updateCart(Request $request)
     {
-        // Retrieve all input values from the form
-        $quantities = $request->input('quantity');
+        // Check if the request is an AJAX request
+        if ($request->ajax()) {
+            // Retrieve all input values from the form
+            $quantities = $request->input('quantity');
+            $updatedOrders = [];
 
-        // Loop through each pizza quantity and update the database
-        foreach ($quantities as $pizzaId => $quantity) {
+            // Loop through each pizza quantity and update the database
+            foreach ($quantities as $pizzaId => $quantity) {
+                // Find the pizza order by ID
+                $order = Order::findOrFail($pizzaId);
 
-            // Find the pizza order by ID
-            $order = order::findOrFail($pizzaId);
+                if ($quantity == 0) {
+                    $order->delete();
+                } else {
+                    $price = 0;
 
-            if($quantity == 0){
-                $order->delete();
-            }else{
-
-                $price = 0;
-
-                foreach($this->pizzas as $pizza){
-                    if($pizza["name"] == $order->name){
-                        $price = $pizza["price"] * $quantity;
-                        break;
+                    foreach ($this->pizzas as $pizza) {
+                        if ($pizza["name"] == $order->name) {
+                            $price = $pizza["price"] * $quantity;
+                            break;
+                        }
                     }
-                }
 
-                // Update the quantity
-                $order->qty = $quantity;
-                $order->price = $price;
-                
-                // Save the changes
-                $order->save();
+                    // Update the quantity and price
+                    $order->qty = $quantity;
+                    $order->price = $price;
+
+                    // Save the changes
+                    $order->save();
+                    $updatedOrders[] = $order;
+                }
             }
-            
+
+            // Prepare the response data
+            // $updatedOrders = Order::all();
+            // $totalPrice = $updatedOrders->sum('price');
+
+            return response()->json([
+                'success' => true,
+                'orders' => $updatedOrders,
+                'message' => 'Cart updated successfully!',
+                // 'message' => 'Cart updated successfully!',
+                // 'orders' => $updatedOrders,
+                // 'totalPrice' => $totalPrice,
+            ]);
         }
 
-        // Redirect back to the cart page or wherever you want
+        // Fallback for non-AJAX requests
         return redirect()->route('cart')->with('success', 'Cart updated successfully!');
     }
 }

@@ -3,7 +3,6 @@
 @section('content')
 
 <html>
-
 <div class="breadcrumb-area breadcrumb-padding-6">
     <div class="container">
         <div class="breadcrumb-content text-center">
@@ -14,13 +13,9 @@
                 <li>
                     <a href="{{ route('firstPage') }}">HOME</a>
                 </li>
-                <li>
-                    >
-                </li>
+                <li>></li>
                 <li><a href="{{ route('order') }}">ORDER PIZZA</a></li>
-                <li>
-                    >
-                </li>
+                <li>></li>
                 <li>CART</li>
             </ul>
         </div>
@@ -48,7 +43,6 @@
                                 </thead>
                                 <tbody>
                                     @foreach($pizzaOrder as $pizza)
-
                                         <tr id="product-row-{{ $pizza->id }}">
                                             <td class="product-thumbnail">
                                                 <img src="{{ asset('assets/images/cart/pizza_kecik.jpg') }}" alt="">
@@ -59,7 +53,6 @@
                                             <td class="product-price"><span id="product-price-{{ $pizza->id }}">RM {{ $pizza->price / $pizza->qty }}</span></td>
                                             <td class="cart-quality">
                                                 <div class="product-quality">
-                                                    <!-- <input class="cart-plus-minus-box input-text qty text" name="quantity[{{ $pizza->id }}]" value="{{ $pizza->qty }}" type="number" min="0"> -->
                                                     <input id="quantity-input-{{ $pizza->id }}" class="cart-plus-minus-box input-text qty text" name="quantity[{{ $pizza->id }}]" value="{{ $pizza->qty }}" type="number" min="0">
                                                 </div>
                                             </td>
@@ -68,13 +61,8 @@
                                                 <a href="#" class="remove-product" data-id="{{ $pizza->id }}"><i class="las la-trash"></i></a>
                                             </td>
                                         </tr>
-
                                     @endforeach
-
-                                        
-                                    
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -94,7 +82,6 @@
             </div>
         </div>
         <div class="row">
-
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="grand-total-wrap ">
                     <div class="grand-total-btn">
@@ -106,64 +93,59 @@
     </div>
 </div>
 
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // function removeProduct(index) {
-    //     // Set the value of the corresponding quantity input field to 0
-    //     // document.querySelector('input[name="quantity' + index + '"]').value = 0;
-    //     document.querySelector('input[name="quantity[' + index + ']"]').value = 0;
-    // }
     $(document).ready(function() {
-        $('#update-cart-form').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '{{ route("update.cart") }}',
-                data: $(this).serialize(),      //to send normal form submission
-                success: function(response) {
-                    alert(response.message);
-
-                    response.orders.forEach(function(order) {
-                        const pricePerUnit = (order.price / order.qty);
-                        $('#product-price-' + order.id).text('RM ' + pricePerUnit);
-                        $('#product-total-' + order.id).text('RM ' + order.price);
-                        $('#quantity-input-' + order.id).val(order.qty);
+    $('#update-cart-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function(response) {
+                alert(response.message);
+                // Update the cart items on the page based on the response
+                response.orders.forEach(function(order) {
+                    const pricePerUnit = (order.price / order.qty).toFixed(2);
+                    $('#product-price-' + order.id).text('RM ' + pricePerUnit);
+                    $('#product-total-' + order.id).text('RM ' + order.price);
+                    $('#quantity-input-' + order.id).val(order.qty);
                 });
                 $('#total-price').text('RM ' + response.totalPrice);
-                },
-                error: function(response) {
-                    alert('An error occurred while updating the cart.');
-                }
-            });
-        });
-
-        $('.remove-product').on('click', function(e) {
-            e.preventDefault();
-            const productId = $(this).data('id');
-            $.ajax({
-                type: 'POST',
-                url: '{{ route("update.cart") }}',
-                data: {                   //to send custom data
-                    _token: '{{ csrf_token() }}',
-                    quantity: {
-                        [productId]: 0
-                    }
-                },
-                success: function(response) {
-                    alert('Product removed successfully!');
-                    $('#product-row-' + productId).remove();
-                    // Optionally, update the page content based on the response
-                },
-                error: function(response) {
-                    alert('An error occurred while removing the product.');
-                }
-            });
+            },
+            error: function(response) {
+                alert('An error occurred while updating the cart.');
+            }
         });
     });
 
+    $('.remove-product').on('click', function(e) {
+        e.preventDefault();
+        const productId = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("update.cart") }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                quantity: {
+                    [productId]: 0
+                }
+            },
+            success: function(response) {
+                alert('Product removed successfully!');
+                // Update the cart items on the page based on the response
+                $('#product-row-' + productId).remove();
+                $('#total-price').text('RM ' + response.totalPrice);
+            },
+            error: function(response) {
+                alert('An error occurred while removing the product.');
+            }
+        });
+    });
+});
+
 </script>
-
-
 </html>
 
 @endsection
