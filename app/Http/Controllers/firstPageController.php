@@ -105,7 +105,6 @@ class firstPageController extends Controller
                 $pizzaName = $size.' '.$pepperoni.' '.$cheese;
             }
 
-            // Check if a pizza with the same name already exists in the database
             $order = Order::where('name', $pizzaName)->first();
 
             foreach ($this->pizzas as $pizza) {
