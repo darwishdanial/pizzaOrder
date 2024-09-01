@@ -14,7 +14,8 @@ use App\Http\Controllers\firstPageController;
 |
 */
 
-Route::get('/', [firstPageController::class, 'index'])->name('firstPage');
+// Route::get('/', [firstPageController::class, 'index'])->name('firstPage');
+Route::view('/','pages.firstPage')->name('firstPage');
 
 Route::get('/order',[firstPageController::class, 'order'])->name('order');
 Route::post('/add-cart',[firstPageController::class, 'addToCart'])->name('add.cart');

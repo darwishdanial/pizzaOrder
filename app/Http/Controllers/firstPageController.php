@@ -30,15 +30,15 @@ class firstPageController extends Controller
     ];
     
  
-    public function index(){
-        if (Session::has('pizzaQty') && !is_null(Session::get('pizzaQty'))) {
-            $pizzaQty = Session::get('pizzaQty');
-        } else {
-            Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
-        }
-        // Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
-        return view('pages.firstPage');
-    }
+    // public function index(){
+    //     // if (Session::has('pizzaQty') && !is_null(Session::get('pizzaQty'))) {
+    //     //     $pizzaQty = Session::get('pizzaQty');
+    //     // } else {
+    //     //     Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
+    //     // }
+    //     // Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
+    //     return view('pages.firstPage');
+    // }
 
     public function order(){
 
