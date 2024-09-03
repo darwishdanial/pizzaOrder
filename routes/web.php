@@ -24,3 +24,5 @@ Route::post('/update-cart',[firstPageController::class, 'updateCart'])->name('up
 Route::get('/cart',[firstPageController::class, 'cart'])->name('cart');
 Route::get('/checkout',[firstPageController::class, 'checkout'])->name('checkout');
 Route::get('/checkout-clear-item',[firstPageController::class, 'clearItem'])->name('clearItem');
+
+Route::view('/login-register','pages.login-register')->name('reglog');

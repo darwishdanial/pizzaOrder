@@ -85,6 +85,9 @@
                                     <li><a href="{{ route('checkout') }}">Checkout Page</a></li>
                                 </ul>
                             </li>
+                            <li>
+                                <a href="{{ route('reglog') }}">LOG IN / REGISTER</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
