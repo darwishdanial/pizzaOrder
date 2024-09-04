@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\firstPageController;
+use App\Http\Controllers\registerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,6 @@ Route::get('/cart',[firstPageController::class, 'cart'])->name('cart');
 Route::get('/checkout',[firstPageController::class, 'checkout'])->name('checkout');
 Route::get('/checkout-clear-item',[firstPageController::class, 'clearItem'])->name('clearItem');
 
-Route::view('/login-register','pages.login-register')->name('reglog');
+Route::view('/login-register','pages.login-register')->name('reg.log');
+Route::post('/login-register',[registerController::class, 'store'])->name('reg.log.user');
+Route::post('/logout', [registerController::class, 'logout'])->name('logout');

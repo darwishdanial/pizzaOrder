@@ -86,7 +86,16 @@
                                 </ul>
                             </li>
                             <li>
-                                <a href="{{ route('reglog') }}">LOG IN / REGISTER</a>
+                                <a href="{{ route('reg.log') }}">LOG IN / REGISTER</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    LOG OUT
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </li>
                         </ul>
                     </div>

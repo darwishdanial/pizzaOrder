@@ -54,20 +54,44 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div id="lg2" class="tab-pane">
                             <div class="login-form-container">
                                 <div class="login-register-form">
-                                    <form action="#" method="post">
-                                        <input type="text" name="user-name" placeholder="name">
-                                        <input type="password" name="user-password" placeholder="Password">
-                                        <input name="user-email" placeholder="Email" type="email">
+                                    <form method="POST" action="{{ route('reg.log.user') }}">
+                                        @csrf
+
+                                        <!-- Name -->
+                                        <input type="text" name="name" placeholder="Name" value="{{ old('name') }}">
+                                        @error('name')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                        <!-- Email -->
+                                        <input name="email" placeholder="Email" type="email" value="{{ old('email') }}">
+                                        @error('email')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                        <!-- Password -->
+                                        <input type="password" name="password" placeholder="Password">
+                                        @error('password')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                        <!-- Confirm Password -->
+                                        <input type="password" name="password_confirmation" placeholder="Confirm Password">
+                                        @error('password_confirmation')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
                                         <div class="button-box">
                                             <button type="submit">Register</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </div>
