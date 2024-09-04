@@ -38,6 +38,30 @@ class registerController extends Controller
         return redirect()->route('order');
     }
 
+    public function login(Request $request): RedirectResponse
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        // Attempt to log the user in
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Authentication passed, regenerate session to prevent session fixation
+            $request->session()->regenerate();
+
+            // Redirect to the intended page or a default page after successful login
+            return redirect()->intended('order');
+        }
+
+        // If authentication fails, redirect back with an error message
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->withInput($request->only('email'));
+    }
+
+
     public function logout(): RedirectResponse
     {
         if (Auth::check()) {

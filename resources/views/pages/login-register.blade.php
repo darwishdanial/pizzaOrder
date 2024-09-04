@@ -10,15 +10,6 @@
             <div class="breadcrumb-title">
                 <h2>Login - Register </h2>
             </div>
-            <ul>
-                <li>
-                    <a href="index.html">HOME</a>
-                </li>
-                <li>
-                    >
-                </li>
-                <li>LOGIN - REGISTER </li>
-            </ul>
         </div>
     </div>
 </div>
@@ -39,9 +30,11 @@
                         <div id="lg1" class="tab-pane active">
                             <div class="login-form-container">
                                 <div class="login-register-form">
-                                    <form action="#" method="post">
-                                        <input type="text" name="user-name" placeholder="email">
-                                        <input type="password" name="user-password" placeholder="Password">
+                                    <form method="POST" action="{{ route('login') }}">
+                                        @csrf
+
+                                        <input type="email" name="email" placeholder="Email" required>
+                                        <input type="password" name="password" placeholder="Password" required>
                                         <div class="button-box">
                                             <!-- <div class="login-toggle-btn">
                                                 <input type="checkbox">

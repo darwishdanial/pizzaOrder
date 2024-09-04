@@ -167,9 +167,14 @@
                     // alert(response.message);
                     $('#total-pizza').text('+' + response.qty + ' Pizza has been added to cart');
                 },
-                error: function(response) {
+                error: function(xhr) {
+                if (xhr.status === 401 && xhr.responseJSON.redirect) {
+                    // Redirect to the login page
+                    window.location.href = xhr.responseJSON.redirect;
+                } else {
                     alert('An error occurred while updating the cart.');
                 }
+            }
             });
         });
     });
