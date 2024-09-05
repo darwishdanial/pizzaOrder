@@ -64,7 +64,7 @@
                                     <ul>
                                         @foreach ($pizzaOrder as $pizza)
                                             @if ($pizza->qty > 0)
-                                                <li>{{ $pizza->name }} X {{ $pizza->price / $pizza->qty }} <span>RM{{ $pizza->price }}</span></li>
+                                                <li>{{ $pizza->name }} X{{ $pizza->qty }} <span>RM{{ $pizza->price }}</span></li>
                                             @endif
                                         @endforeach
                                     </ul>

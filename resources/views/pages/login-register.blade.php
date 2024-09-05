@@ -13,6 +13,24 @@
         </div>
     </div>
 </div>
+
+@if (Auth::check())
+<div class="checkout-main-area pb-130">
+    <div class="container">
+                <div class="col-lg-5">
+                    <div class="your-order-area">
+                        <h3>User already log in. Continue ordering</h3>   
+                        <div class="Place-order">
+                            <a href="{{ route('order') }}">Order</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@else
+
 <div class="login-register-area pb-130">
     <div class="container">
         <div class="row">
@@ -34,7 +52,15 @@
                                         @csrf
 
                                         <input type="email" name="email" placeholder="Email" required>
+                                        @error('email')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
                                         <input type="password" name="password" placeholder="Password" required>
+                                        @error('password')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
                                         <div class="button-box">
                                             <!-- <div class="login-toggle-btn">
                                                 <input type="checkbox">
@@ -91,6 +117,7 @@
         </div>
     </div>
 </div>
+@endif
 
 </html>
 

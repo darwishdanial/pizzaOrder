@@ -43,7 +43,9 @@ class firstPageController extends Controller
 
     public function order(){
 
-        $pizzaOrder = order::all();
+        $user = auth()->user();
+
+        $pizzaOrder = Order::where('user_id', $user->id)->get();
         // $pizzaQty = 0;
 
         // foreach($pizzaOrder as $pizza){
@@ -58,7 +60,9 @@ class firstPageController extends Controller
 
     public function cart(){
         // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
-        $pizzaOrder = order::all();
+        $user = auth()->user();
+
+        $pizzaOrder = Order::where('user_id', $user->id)->get();
         //return view('pages.cartPage', ['pizzaQty' => $pizzaQty, 'pizzaName' => $this->pizzaName]);
         return view('pages.cartPage', ['pizzaOrder' => $pizzaOrder]);
     }
@@ -71,7 +75,9 @@ class firstPageController extends Controller
         //     $totalPrice += $quantity * $this->pizzaPrice[$index];
         // }
 
-        $pizzaOrder = order::all();
+        $user = auth()->user();
+
+        $pizzaOrder = Order::where('user_id', $user->id)->get();
         // $totalPrice = 0;
         // foreach($pizzaOrder as $pizza){
         //     $totalPrice += $pizza->price;
@@ -83,15 +89,24 @@ class firstPageController extends Controller
 
     public function clearItem(){
         // Session::forget('pizzaQty');
-        order::truncate();
-        $pizzaOrder = order::all();
+            // Get the currently authenticated user
+        $user = auth()->user();
+
+        // Delete only the pizza orders for the current user
+        Order::where('user_id', $user->id)->delete();
+
+        // Fetch the remaining pizza orders (for other users, if needed)
+        $pizzaOrder = Order::where('user_id', $user->id)->get();
         $totalPrice = 0;
+        
         return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
     }
 
     public function addToCart(Request $request) {
 
         if ($request->ajax()) {
+
+            $user = auth()->user();
 
             $size = $request->input('size');
             $pepperoni = $request->input('pepperoni');
@@ -106,7 +121,9 @@ class firstPageController extends Controller
                 $pizzaName = $size.' '.$pepperoni.' '.$cheese;
             }
 
-            $order = Order::where('name', $pizzaName)->first();
+            $order = Order::where('name', $pizzaName)
+                      ->where('user_id', $user->id)
+                      ->first();
 
             foreach ($this->pizzas as $pizza) {
                 if ($pizza["name"] == $pizzaName) {
@@ -128,12 +145,13 @@ class firstPageController extends Controller
                     'name' => $pizzaName,
                     'qty' => $quantity,
                     'price' => $price * $quantity,
+                    'user_id' => $user->id,
                 ]);
 
                 $order->save();
             }
 
-            $pizzaOrder = order::all();
+            $pizzaOrder = Order::where('user_id', $user->id)->get();
             $pizzaQty = $pizzaOrder->sum('qty');
 
             return response()->json([
@@ -149,6 +167,8 @@ class firstPageController extends Controller
 
     public function updateCart(Request $request)
     {
+        $user = auth()->user();
+
         // Check if the request is an AJAX request
         if ($request->ajax()) {
             // Retrieve all input values from the form
@@ -158,7 +178,9 @@ class firstPageController extends Controller
             // Loop through each pizza quantity and update the database
             foreach ($quantities as $pizzaId => $quantity) {
                 // Find the pizza order by ID
-                $order = Order::findOrFail($pizzaId);
+                $order = Order::where('id', $pizzaId)
+                          ->where('user_id', $user->id)
+                          ->firstOrFail();
 
                 if ($quantity == 0) {
                     $order->delete();
