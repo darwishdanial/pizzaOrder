@@ -43,18 +43,17 @@ class firstPageController extends Controller
 
     public function order(){
 
-        $user = auth()->user();
 
-        $pizzaOrder = Order::where('user_id', $user->id)->get();
-        // $pizzaQty = 0;
+        if (auth()->check()) {
+            $user = auth()->user();
 
-        // foreach($pizzaOrder as $pizza){
-        //     $pizzaQty += $pizza->qty;
-        // }
-        // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
-        // $totalPizza = array_sum($pizzaQty);
+            $pizzaOrder = Order::where('user_id', $user->id)->get();
+    
+            $pizzaQty = $pizzaOrder->sum('qty');
+        } else {
+            $pizzaQty = 0;
+        }
 
-        $pizzaQty = $pizzaOrder->sum('qty');
         return view('pages.orderPage',['pizzaQty' => $pizzaQty]);
     }
 

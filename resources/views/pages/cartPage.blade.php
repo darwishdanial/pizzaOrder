@@ -82,7 +82,7 @@
                         <div class="col-lg-12">
                             <div class="cart-shiping-update-wrapper">
                                 <div class="cart-shiping-update">
-                                    <a href="{{ route('order') }}">Order More Pizza</a>
+                                    <a href="{{ route('order', ['user' => Auth::user()->id ?? 'guest']) }}">Order More Pizza</a>
                                 </div>
                                 <div class="cart-clear">
                                     <button type="submit" id="update-cart-button">Update Cart</button>
@@ -98,7 +98,7 @@
             <div class="col-lg-4 col-md-6 col-12">
                 <div class="grand-total-wrap ">
                     <div class="grand-total-btn">
-                        <a class="btn btn-link" href="{{ route('checkout') }}">Proceed to checkout</a>
+                        <a class="btn btn-link" href="{{ route('checkout', ['user' => Auth::user()->id ?? 'guest']) }}">Proceed to checkout</a>
                     </div>
                 </div>
             </div>

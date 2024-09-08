@@ -21,7 +21,7 @@
                 <li>
                     >
                 </li>
-                <li><a href="{{ route('cart') }}">CART</a></li>
+                <li><a href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">CART</a></li>
                 <li>
                     >
                 </li>

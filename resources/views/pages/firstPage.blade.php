@@ -23,6 +23,16 @@
         </div>
 </div>
 
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve flash message from the session
+        @if(session('message'))
+            alert('{{ session('message') }}');
+        @endif
+    });
+</script>
+
 </html>
 
 @endsection

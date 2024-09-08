@@ -50,7 +50,7 @@
                     <div class="col-4">
                         <div class="header-action-wrap">
                             <div class="header-action-cart">
-                                <!-- <a class="cart-active" href="{{ route('cart') }}">
+                                <!-- <a class="cart-active" href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">
                                     <img class="injectable" src="{{ asset('assets/images/icon-img/bag.svg') }}" alt="">
 
                                     <span class="product-count">01</span>
@@ -81,8 +81,8 @@
                                 <ul>
                                     <li><a href="{{ route('firstPage') }}">Home Page</a></li>
                                     <li><a href="{{ route('order') }}">Order Page</a></li>
-                                    <li><a href="{{ route('cart') }}">Cart Page</a></li>
-                                    <li><a href="{{ route('checkout') }}">Checkout Page</a></li>
+                                    <li><a href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">Cart Page</a></li>
+                                    <li><a href="{{  route('checkout', ['user' => Auth::user()->id ?? 'guest']) }}">Checkout Page</a></li>
                                 </ul>
                             </li>
                             <li>

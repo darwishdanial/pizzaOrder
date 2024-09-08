@@ -55,7 +55,7 @@
                         @csrf
 
                         <div class="product-details-size clearfix">
-                            <select class="nice-select nice-select-style-1" name="size" required>
+                            <select class="nice-select nice-select-style-1" name="size">
                                 <option value="" disabled selected>Select Size</option>
                                 <option value="Small">Small</option>
                                 <option value="Medium">Medium</option>
@@ -63,14 +63,14 @@
                             </select>
                         </div>
                         <div class="product-details-size clearfix">
-                            <select class="nice-select nice-select-style-1" name="pepperoni" required>
+                            <select class="nice-select nice-select-style-1" name="pepperoni">
                                 <option value="" disabled selected>Select Pepperoni</option>
                                 <option value="Pepperoni">Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
                         <div class="product-details-size clearfix">
-                            <select class="nice-select nice-select-style-1" name="cheese" required>
+                            <select class="nice-select nice-select-style-1" name="cheese">
                                 <option value="" disabled selected>Select Cheese</option>
                                 <option value="Normal Cheese">Normal</option>
                                 <option value="Extra Cheese">Extra</option>
@@ -88,7 +88,7 @@
 
                     <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
                         <div class="product-details-cart">
-                            <a href="{{ route('cart') }}">View cart</a>
+                            <a href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">View cart</a>
                         </div>
                     </div>
                     <p id="total-pizza" data-aos="fade-up" data-aos-delay="300">+{{$pizzaQty}} Pizza has been added to cart</p>
@@ -159,6 +159,20 @@
     $(document).ready(function() {
         $('#add-cart-form').on('submit', function(e) {
             e.preventDefault();
+
+            let size = $('select[name="size"]').val();
+            let pepperoni = $('select[name="pepperoni"]').val();
+            let cheese = $('select[name="cheese"]').val();
+            let quantity = $('input[name="quantity"]').val();
+
+            // Check if any required field is not selected
+            if (!size || !pepperoni || !cheese || !quantity) {
+                // Show error message if any option is missing
+                alert('Please select all options before adding to the cart.');
+                return;
+            }
+
+
             $.ajax({
                 type: 'POST',
                 url: '{{ route("add.cart") }}',

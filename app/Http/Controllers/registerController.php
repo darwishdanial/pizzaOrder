@@ -69,7 +69,7 @@ class registerController extends Controller
             Auth::logout();
     
             // Redirect to the desired page after logging out
-            return redirect()->route('firstPage');
+            return redirect()->route('firstPage')->with('message', 'You have been successfully logged out.');
         } else {
             // If no user is logged in, redirect them to the login page
             return redirect()->route('reg.log');

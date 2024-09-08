@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\firstPageController;
 use App\Http\Controllers\registerController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,7 @@ Route::middleware(['auth.check'])->group(function () {
     
     Route::post('/add-cart',[firstPageController::class, 'addToCart'])->name('add.cart');
     Route::post('/update-cart',[firstPageController::class, 'updateCart'])->name('update.cart');
-    Route::get('/cart',[firstPageController::class, 'cart'])->name('cart');
-    Route::get('/checkout',[firstPageController::class, 'checkout'])->name('checkout');
+    Route::get('/order/{user}/cart',[firstPageController::class, 'cart'])->name('cart');
+    Route::get('/order/{user}/cart/checkout',[firstPageController::class, 'checkout'])->name('checkout');
     Route::get('/checkout-clear-item',[firstPageController::class, 'clearItem'])->name('clearItem');
 });
