@@ -178,7 +178,7 @@
                 url: '{{ route("add.cart") }}',
                 data: $(this).serialize(),      //to send normal form submission
                 success: function(response) {
-                    // alert(response.message);
+                    alert(response.message);
                     $('#total-pizza').text('+' + response.qty + ' Pizza has been added to cart');
                 },
                 error: function(xhr) {
