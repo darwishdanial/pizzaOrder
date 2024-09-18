@@ -51,7 +51,7 @@
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
 
-                                        <input type="email" name="email" placeholder="Email" required>
+                                        <input type="email" name="email" placeholder="Email" value="{{ old('email')}}" required>
                                         @error('email')
                                             <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
