@@ -89,6 +89,9 @@
                                 <a href="{{ route('reg.log') }}">LOG IN / REGISTER</a>
                             </li>
                             <li>
+                                <a href="{{  route('staffPage') }}">Staff page</a>
+                            </li>
+                            <li>
                                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     LOG OUT
                                 </a>

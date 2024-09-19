@@ -18,6 +18,7 @@ use App\Models\User;
 
 // Route::get('/', [firstPageController::class, 'index'])->name('firstPage');
 Route::view('/','pages.firstPage')->name('firstPage');
+Route::view('/staff-dashboard','pages.staffDashboardPage')->name('staffPage');
 
 Route::view('/login-register','pages.login-register')->name('reg.log');
 Route::post('/login-register',[registerController::class, 'store'])->name('reg.log.user');
