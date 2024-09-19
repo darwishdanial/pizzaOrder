@@ -135,7 +135,7 @@
                                     </div>
                                     <span class="profile-username">
                                         <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">Hizrian</span>
+                                        <span class="fw-bold">{{ auth()->user()->name }}</span>
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -150,8 +150,8 @@
                                             />
                                         </div>
                                         <div class="u-text">
-                                            <h4>Hizrian</h4>
-                                            <p class="text-muted">hello@example.com</p>
+                                            <h4>{{ auth()->user()->name }}</h4>
+                                            <p class="text-muted">{{ auth()->user()->email }}</p>
                                             <a
                                             href="profile.html"
                                             class="btn btn-xs btn-secondary btn-sm"
@@ -168,7 +168,13 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">Account Setting</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Logout</a>
+                                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            LOG OUT
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
                                     </li>
                                     </div>
                                 </ul>
@@ -186,6 +192,8 @@
                             <h3 class="fw-bold mb-3">Staff Dashboard</h3>
                         </div>
                     </div>
+
+                    @can('view-admin-detail')
                     <div class="row">
                         <div class="col-sm-6 col-md-3">
                             <div class="card card-stats card-round">
@@ -264,6 +272,8 @@
                             </div>
                         </div>
                     </div>
+                    @endcan
+                    
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-round">
@@ -278,26 +288,25 @@
                                         <table class="table align-items-center mb-0">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th scope="col">Payment Number</th>
-                                                    <th scope="col" class="text-end">Date & Time</th>
-                                                    <th scope="col" class="text-end">Amount</th>
+                                                    <th scope="col">Pizza</th>
+                                                    <th scope="col" class="text-end">Name</th>
                                                     <th scope="col" class="text-end">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <th scope="row">
-                                                        <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                            <i class="fa fa-check"></i>
-                                                        </button>
-                                                        Payment from #10231
-                                                    </th>
-                                                    <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                                    <td class="text-end">$250.00</td>
-                                                    <td class="text-end">
-                                                        <span class="badge badge-success">Completed</span>
-                                                    </td>
-                                                </tr>
+                                            @foreach($users as $user)
+                                                    <tr>
+                                                        <td>
+                                                            @foreach($user->orders as $order)
+                                                                {{ $order->name }} x{{ $order->qty }} <br>
+                                                            @endforeach
+                                                        </td>
+                                                        <td class="text-end">{{ $user->name }}</td>
+                                                        <td class="text-end">
+                                                            <span class="btn btn-primary btn-round">Start cooking</span>
+                                                        </td>
+                                                    </tr>
+                                            @endforeach
                                             </tbody>
                                         </table>
                                     </div>

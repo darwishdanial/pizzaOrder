@@ -28,6 +28,7 @@ class registerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_type' => 2,
         ]);
 
         event(new Registered($user));
@@ -50,6 +51,12 @@ class registerController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             // Authentication passed, regenerate session to prevent session fixation
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            if ($user->user_type == 0 || $user->user_type == 1) {
+                return redirect()->route('staffPage'); // Redirect to staff dashboard for user types 0 and 1
+            }
 
             // Redirect to the intended page or a default page after successful login
             return redirect()->intended('order');

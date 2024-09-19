@@ -4,6 +4,7 @@
 
 <html>
 
+
 <div class="slider-area">
         <div class="slider-active-1 nav-style-1">
             <div
@@ -24,6 +25,11 @@
 </div>
 
 <script>
+
+    @if($errors->any())
+        alert('{{ $errors->first() }}');
+    @endif
+
     // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // Retrieve flash message from the session
