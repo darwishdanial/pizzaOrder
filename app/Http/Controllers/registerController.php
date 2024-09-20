@@ -55,7 +55,7 @@ class registerController extends Controller
             $user = Auth::user();
 
             if ($user->user_type == 0 || $user->user_type == 1) {
-                return redirect()->route('staffPage'); // Redirect to staff dashboard for user types 0 and 1
+                return redirect()->route('staffPage', ['user' => $user->id]); // Redirect to staff dashboard for user types 0 and 1
             }
 
             // Redirect to the intended page or a default page after successful login
