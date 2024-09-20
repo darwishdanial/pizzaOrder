@@ -29,8 +29,20 @@ class UsersTableSeeder extends Seeder
                 'user_type' => 1,
             ],
             [
+                'name' => 'Ahmad darwish',
+                'email' => 'darwish@pizzaplz.com',
+                'password' =>  hash::make(123456),
+                'user_type' => 1,
+            ],
+            [
                 'name' => 'Ahmad Aqil',
                 'email' => 'aqil@gmail.com',
+                'password' =>  hash::make(123456),
+                'user_type' => 2,
+            ],
+            [
+                'name' => 'masha',
+                'email' => 'masha@gmail.com',
                 'password' =>  hash::make(123456),
                 'user_type' => 2,
             ]

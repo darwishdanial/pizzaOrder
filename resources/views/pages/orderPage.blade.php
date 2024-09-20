@@ -76,14 +76,16 @@
                                 <option value="Extra Cheese">Extra</option>
                             </select>
                         </div>
-                        <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
-                            <div class="product-quality">
-                                <input class="cart-plus-minus-box input-text qty text" name="quantity" value="1" type="number" min="0">
+                        @can('add-to-cart')
+                            <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
+                                <div class="product-quality">
+                                    <input class="cart-plus-minus-box input-text qty text" name="quantity" value="1" type="number" min="0">
+                                </div>
+                                <div class="product-details-cart">
+                                    <button type="submit">Add to cart</button>
+                                </div>
                             </div>
-                            <div class="product-details-cart">
-                                <button type="submit">Add to cart</button>
-                            </div>
-                        </div>
+                        @endcan
                     </form>
 
                     <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">

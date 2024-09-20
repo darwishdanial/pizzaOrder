@@ -47,7 +47,10 @@ class firstPageController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
 
-            $pizzaOrder = Order::where('user_id', $user->id)->get();
+            $pizzaOrder = Order::where('user_id', $user->id)
+            ->where('is_active', true)
+            ->where('status', 0)
+            ->get();
     
             $pizzaQty = $pizzaOrder->sum('qty');
         } else {
@@ -61,44 +64,78 @@ class firstPageController extends Controller
         // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
         $user = auth()->user();
 
-        $pizzaOrder = Order::where('user_id', $user->id)->get();
-        //return view('pages.cartPage', ['pizzaQty' => $pizzaQty, 'pizzaName' => $this->pizzaName]);
+        // $pizzaOrder = Order::where('user_id', $user->id)->get();
+        $pizzaOrder = Order::where('user_id', $user->id)
+                    ->where('is_active', true)
+                    ->where('status', 0)
+                    ->get();
+                    
         return view('pages.cartPage', ['pizzaOrder' => $pizzaOrder]);
     }
 
     public function checkout(){
-        // $pizzaQty = session('pizzaQty', array_fill(0, 12, 0));
-
-        // $totalPrice = 0;
-        // foreach ($pizzaQty as $index => $quantity) {
-        //     $totalPrice += $quantity * $this->pizzaPrice[$index];
-        // }
 
         $user = auth()->user();
+        $emptyPizza = "no";
+        $pizzaStatus = 0;
+        $pizzaOrder = Order::where('user_id', $user->id)
+                         ->where('is_active', true)
+                         ->where('status', 0)
+                         ->get();
+        if ($pizzaOrder->isEmpty()) {
+            $pizzaOrder = Order::where('user_id', $user->id)
+                                ->where('is_active', true)
+                                ->whereIn('status', [1, 2, 3])
+                                ->first();
+            $pizzaOrder = collect($pizzaOrder ? [$pizzaOrder] : []);
+            $pizzaStatus = 1;
 
-        $pizzaOrder = Order::where('user_id', $user->id)->get();
-        // $totalPrice = 0;
-        // foreach($pizzaOrder as $pizza){
-        //     $totalPrice += $pizza->price;
-        // }
+        }
+        if ($pizzaOrder->isEmpty()) {
+            $emptyPizza = "yes";
+        }
         $totalPrice = $pizzaOrder->sum('price');
 
-        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
+        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice, 'emptyPizza' => $emptyPizza, 'pizzaStatus' => $pizzaStatus]);
     }
 
-    public function clearItem(){
-        // Session::forget('pizzaQty');
-            // Get the currently authenticated user
+    public function clearItem(Request $request){
+
         $user = auth()->user();
+        $emptyPizza = "no";
+        $pizzaStatus = "";
+        $activePizzas = Order::where('user_id', $user->id)
+                         ->where('is_active', true)
+                         ->get();
 
-        // Delete only the pizza orders for the current user
-        Order::where('user_id', $user->id)->delete();
+        if ($activePizzas->isEmpty()) {
 
-        // Fetch the remaining pizza orders (for other users, if needed)
-        $pizzaOrder = Order::where('user_id', $user->id)->get();
-        $totalPrice = 0;
+            $emptyPizza = "yes";
+
+        }else{
+
+            $firstPizza = $activePizzas->first()->status;
+
+            if($firstPizza == 1 || $firstPizza == 0 ){
+                $pizzaStatus = "Prepairing order";
+            }else if($firstPizza == 2){
+                $pizzaStatus = "Out for delivery";
+            }else{
+                $pizzaStatus = "Order delivered";
+            }
+    
+            foreach ($activePizzas as $pizzaOrder) {
+    
+                if($pizzaOrder->status == 0 ){
+                    $pizzaOrder->status = 1;
+                    $pizzaOrder->save();  
+                }
+            }
+        }
+
+        $totalPrice = $activePizzas->sum('price');
         
-        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice]);
+        return view('pages.deliveryStatusPage', ['pizzaOrder' => $activePizzas, 'totalPrice' => $totalPrice, 'pizzaStatus' => $pizzaStatus, 'emptyPizza' => $emptyPizza]);
     }
 
     public function addToCart(Request $request) {

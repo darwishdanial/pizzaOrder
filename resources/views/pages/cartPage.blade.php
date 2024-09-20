@@ -132,7 +132,7 @@
                 $('#total-price').text('RM ' + response.totalPrice);
                 },
                 error: function(response) {
-                    alert('An error occurred while updating the cart.');
+                    alert('No item in cart');
                 }
             });
         });

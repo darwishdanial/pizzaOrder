@@ -37,8 +37,8 @@
                     <div class="col-4">
                         <div class="language-wrap">
                             <ul>
-                                <li><a href="#">ENG</a></li>
-                                <li><a href="#">BM</a></li>
+                                <!-- <li><a>Welcome</a></li> -->
+                                <li><a>Welcome {{Auth::user()->name ?? 'guest'}}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -83,6 +83,7 @@
                                     <li><a href="{{ route('order') }}">Order Page</a></li>
                                     <li><a href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">Cart Page</a></li>
                                     <li><a href="{{  route('checkout', ['user' => Auth::user()->id ?? 'guest']) }}">Checkout Page</a></li>
+                                    <!-- <li><a href="{{  route('clearItem', ['user' => Auth::user()->id ?? 'guest']) }}">Delivery Page</a></li> -->
                                 </ul>
                             </li>
                             <li>

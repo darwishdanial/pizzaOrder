@@ -8,7 +8,7 @@
     <div class="container">
         <div class="breadcrumb-content text-center">
             <div class="breadcrumb-title">
-                <h2>Checkout</h2>
+                <h2>Delivery</h2>
             </div>
             <ul>
                 <li>
@@ -25,7 +25,11 @@
                 <li>
                     >
                 </li>
-                <li>CHECKOUT</li>
+                <li><a href="{{ route('checkout', ['user' => Auth::user()->id ?? 'guest']) }}">CHECKOUT</a></li>
+                <li>
+                    >
+                </li>
+                <li> DELIVERY </li>
             </ul>
         </div>
     </div>
@@ -46,27 +50,12 @@
         </div>
     </div>
 </div>
-@elseif ($emptyPizza == "no" && $pizzaStatus == 1)
+@elseif ($emptyPizza == "no")
 <div class="checkout-main-area pb-130">
     <div class="container">
                 <div class="col-lg-5">
                     <div class="your-order-area">
-                        <h3>View order status</h3>   
-                        <div class="Place-order">
-                            <a href="{{ route('clearItem') }}">GO TO ORDER STATUS</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@else
-<div class="checkout-main-area pb-130">
-    <div class="container">
-                <div class="col-lg-5">
-                    <div class="your-order-area">
-                        <h3>Your order</h3>
+                        <h3>{{$pizzaStatus}}</h3>
                         <div class="your-order-wrap gray-bg-4">
                             <div class="your-order-info-wrap">
                                 <div class="your-order-info">
@@ -101,9 +90,6 @@
                                     </ul>
                                 </div>
                             </div>
-                        <div class="Place-order">
-                            <a href="{{ route('clearItem') }}">Checkout</a>
-                        </div>
                     </div>
                 </div>
             </div>

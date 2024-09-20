@@ -6,6 +6,7 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use App\Models\order;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,20 @@ class AuthServiceProvider extends ServiceProvider
         // Define a gate to allow only admins (user_type == 1)
         Gate::define('view-admin-detail', function (User $user) {
             return $user->user_type == 0;
+        });
+
+        Gate::define('add-to-cart', function (User $user) {
+
+            $pizzaOrder = Order::where('user_id', $user->id)
+                                ->where('is_active', true)
+                                ->whereIn('status', [1, 2, 3])
+                                ->first();
+            if (is_null($pizzaOrder)) {
+                return true;
+            }else{
+                return false;
+            }
+            
         });
     }
 }
