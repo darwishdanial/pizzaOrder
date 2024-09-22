@@ -76,7 +76,6 @@
                                 <option value="Extra Cheese">Extra</option>
                             </select>
                         </div>
-                        @can('add-to-cart')
                             <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
                                 <div class="product-quality">
                                     <input class="cart-plus-minus-box input-text qty text" name="quantity" value="1" type="number" min="0">
@@ -85,7 +84,6 @@
                                     <button type="submit">Add to cart</button>
                                 </div>
                             </div>
-                        @endcan
                     </form>
 
                     <div class="product-details-quality-cart" data-aos="fade-up" data-aos-delay="200">
@@ -188,7 +186,15 @@
                     // Redirect to the login page
                     window.location.href = xhr.responseJSON.redirect;
                 } else {
-                    alert('An error occurred while updating the cart.');
+                    // Display detailed error message
+                    let errorMessage = 'An error occurred while updating the cart.';
+                    
+                    // Check if the server returned a specific error message
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    
+                    alert(errorMessage);
                 }
             }
             });

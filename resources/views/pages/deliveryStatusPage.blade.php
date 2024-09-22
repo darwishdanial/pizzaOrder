@@ -35,68 +35,68 @@
     </div>
 </div>
 
-@if ($emptyPizza == "yes")
-<div class="checkout-main-area pb-130">
-    <div class="container">
-                <div class="col-lg-5">
-                    <div class="your-order-area">
-                        <h3>No orders. Continue ordering</h3>   
-                        <div class="Place-order">
-                            <a href="{{ route('firstPage') }}">Home</a>
+
+
+
+@foreach ($activeBills as $bill)
+
+    @php
+        $pizzaStatus = '';
+        if ($bill->status == 0) {
+            $pizzaStatus = "Preparing order";
+        } elseif ($bill->status == 1) {
+            $pizzaStatus = "Out for delivery";
+        } else {
+            $pizzaStatus = "Order delivered";
+        }
+    @endphp
+    
+    <div class="checkout-main-area pb-130">
+        <div class="container">
+                    <div class="col-lg-5">
+                        <div class="your-order-area">
+                            <h3>{{$pizzaStatus}}</h3>
+                            <div class="your-order-wrap gray-bg-4">
+                                <div class="your-order-info-wrap">
+                                    <div class="your-order-info">
+                                        <ul>
+                                            <li>PIZZA <span>Total</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-middle">
+
+                                        <ul>
+                                            @foreach ($bill->orders as $pizza)
+                                                @if ($pizza->qty > 0)
+                                                    <li>{{ $pizza->name }} X{{ $pizza->qty }} <span>RM{{ $pizza->price }}</span></li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-subtotal">
+                                        <ul>
+                                            <li>Subtotal <span>RM{{$bill->total_price}} </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-shipping">
+                                        <ul>
+                                            <li>Delivery <p>RM5</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-total">
+                                        <ul>
+                                            <li>Total <span>RM{{$bill->total_price + 5}} </span></li>
+                                        </ul>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@elseif ($emptyPizza == "no")
-<div class="checkout-main-area pb-130">
-    <div class="container">
-                <div class="col-lg-5">
-                    <div class="your-order-area">
-                        <h3>{{$pizzaStatus}}</h3>
-                        <div class="your-order-wrap gray-bg-4">
-                            <div class="your-order-info-wrap">
-                                <div class="your-order-info">
-                                    <ul>
-                                        <li>PIZZA <span>Total</span></li>
-                                    </ul>
-                                </div>
-                                <div class="your-order-middle">
-
-                                    <ul>
-                                        @foreach ($pizzaOrder as $pizza)
-                                            @if ($pizza->qty > 0)
-                                                <li>{{ $pizza->name }} X{{ $pizza->qty }} <span>RM{{ $pizza->price }}</span></li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="your-order-info order-subtotal">
-                                    <ul>
-                                        <li>Subtotal <span>RM{{$totalPrice}} </span></li>
-                                    </ul>
-                                </div>
-                                <div class="your-order-info order-shipping">
-                                    <ul>
-                                        <li>Delivery <p>RM5</p>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="your-order-info order-total">
-                                    <ul>
-                                        <li>Total <span>RM{{$totalPrice + 5}} </span></li>
-                                    </ul>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+@endforeach
 </html>
 
 @endsection

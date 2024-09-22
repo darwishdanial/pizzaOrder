@@ -34,8 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('add-to-cart', function (User $user) {
 
             $pizzaOrder = Order::where('user_id', $user->id)
-                                ->where('is_active', true)
-                                ->whereIn('status', [1, 2, 3])
+                                ->where('is_active', false)
                                 ->first();
             if (is_null($pizzaOrder)) {
                 return true;

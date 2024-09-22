@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\bill;
+use App\Models\order;
 
-
-class order extends Model
+class bill extends Model
 {
     use HasFactory;
-    protected $table = 'pizza';
+
+    protected $table = 'bill';
 
     protected $fillable = [
-        'name',
-        'qty',
-        'price',
-        'user_id',
-        'bill_id',
-        'is_active'
+        'user_id', 
+        'is_active', 
+        'status',
+        'total_price'
     ];
 
     public function user()
@@ -27,8 +25,9 @@ class order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function bill()
+    public function orders()
     {
-        return $this->belongsTo(bill::class);
+        return $this->hasMany(Order::class);
     }
+
 }
