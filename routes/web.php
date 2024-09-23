@@ -49,6 +49,18 @@ Route::middleware(['auth.check','prevent.customer'])->group(function () {
 
     Route::group(['middleware' => ['admin']], function () {
         // Routes that only admins can access
-        Route::get('/admin/dashboard/bill-history', [adminStaffController::class, 'billHistory'])->name('admin.billHistory');
+        Route::get('/admin/bill-history', [adminStaffController::class, 'billHistory'])->name('admin.billHistory');
+
+        Route::get('/admin/view-customer-list', [adminStaffController::class, 'viewCustomerList'])->name('admin.customerList');
+        Route::delete('/admin/customers-delete/{id}', [adminStaffController::class, 'deleteCustomer'])->name('customers.destroy');
+        Route::get('/admin/customers-edit/{id}', [adminStaffController::class, 'editCustomer'])->name(name: 'customers.edit');
+        Route::put('/admin/customers-save/{id}', [adminStaffController::class, 'saveCustomer'])->name('customers.save');
+
+        Route::get('/admin/view-staff-list', [adminStaffController::class, 'viewStaffList'])->name('admin.staffList');
+        Route::delete('/admin/staff-delete/{id}', [adminStaffController::class, 'deleteStaff'])->name('staff.destroy');
+        Route::get('/admin/staff-edit/{id}', [adminStaffController::class, 'editStaff'])->name(name: 'staff.edit');
+        Route::put('/admin/staff-update/{id}', [adminStaffController::class, 'saveStaff'])->name('staff.save');
+        Route::post('/admin/staff-store', [adminStaffController::class, 'storeStaff'])->name('staff.store');
+        Route::view('/admin/create-staff','pages.staffCreatePage')->name('staff.view.store');
     });
 });

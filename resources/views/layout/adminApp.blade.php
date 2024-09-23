@@ -71,11 +71,39 @@
                                     @csrf
                                 </form>
                             </li>
-                        @elseif(Auth::user()->user_type == 0)
+                        @elseif(Auth::user()->user_type == 0) 
                             <li class="nav-item">
-                                <a href="#">
+                                <a href="{{ route('staffPage', ['user' => Auth::user()->id ?? 'guest']) }}">
+                                    <i class="fas fa-home"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-bs-toggle="collapse" href="#base">
                                     <i class="fas fa-th-list"></i>
                                     <p>User profile</p>
+                                    <span class="caret"></span>
+                                </a>
+                                <div class="collapse" id="base">
+                                    <ul class="nav nav-collapse">
+                                        <li>
+                                        <a href="{{ route('admin.staffList') }}">
+                                            <span class="sub-item">Staff</span>
+                                        </a>
+                                        </li>
+                                        <li>
+                                        <a href="{{ route('admin.customerList') }}">
+                                            <span class="sub-item">Customer</span>
+                                        </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('staff.view.store') }}">
+                                    <i class="fas fa-pen-square"></i>
+                                    <p>Create staff</p>
                                 </a>
                             </li>
                             <li class="nav-item">

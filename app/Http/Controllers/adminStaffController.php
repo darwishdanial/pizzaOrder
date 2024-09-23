@@ -7,6 +7,9 @@ use App\Models\order;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\bill;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class adminStaffController extends Controller
 {
@@ -58,5 +61,82 @@ class adminStaffController extends Controller
                             ->get();
         
         return view('pages.adminBillHistoryPage', ['deactiveBills' => $deactiveBills]);
+    }
+    
+    public function viewCustomerList(){
+        $customer = User::where('user_type', 2)->get();
+
+        return view('pages.customerListPage', ['customer' => $customer]);
+    }
+
+    public function deleteCustomer($id){
+        $customerDelete = user::findOrFail($id);
+        $customerDelete->delete();
+        $customer = User::where('user_type', 2)->get();
+
+        return redirect()->back()->with('success', 'Customer deleted successfully!');
+    }
+
+    public function editCustomer($id){
+        $customerEdit = user::findOrFail($id);
+
+        return view('pages.customerEditPage', ['customerEdit' => $customerEdit]);
+    }
+
+    public function saveCustomer(Request $request, $id){
+        $customerEdit = user::findOrFail($id);
+        $customerEdit->name = $request->input('name');
+        $customerEdit->email = $request->input('email');
+        $customerEdit->save();
+
+        return redirect()->route('admin.customerList');
+    }
+
+    public function viewStaffList(){
+        $staff = User::where('user_type', 1)->get();
+
+        return view('pages.staffListPage', ['staff' => $staff]);
+    }
+
+    public function deleteStaff($id){
+        $staffDelete = user::findOrFail($id);
+        $staffDelete->delete();
+
+        return redirect()->back()->with('success', 'Customer deleted successfully!');
+    }
+
+    public function editStaff($id){
+        $staffEdit = user::findOrFail($id);
+
+        return view('pages.staffEditPage', ['staffEdit' => $staffEdit]);
+    }
+
+    public function saveStaff(Request $request, $id){
+        $staffEdit = user::findOrFail($id);
+        $staffEdit->name = $request->input('name');
+        $staffEdit->email = $request->input('email');
+        $staffEdit->save();
+
+        return redirect()->route('admin.customerList');
+    }
+
+    public function storeStaff(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'user_type' => 1,
+        ]);
+
+        event(new Registered($user));
+
+        return redirect()->route('staff.view.store')->with('success', 'Account created successfully!');
     }
 }
