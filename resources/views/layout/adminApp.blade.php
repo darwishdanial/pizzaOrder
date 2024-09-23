@@ -41,7 +41,7 @@
             <div class="sidebar-logo">
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
-                    <a class="logo">
+                    <a href="{{ route('staffPage', ['user' => Auth::user()->id ?? 'guest']) }}"class="logo">
                         <img src="{{ asset('assetsAdmin/img/kaiadmin/logo_light.svg') }}" alt="navbar brand" class="navbar-brand" height="20" />
                     </a>
                     <div class="nav-toggle">
@@ -79,10 +79,19 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#">
+                                <a href="{{ route('admin.billHistory') }}">
                                     <i class="fas fa-layer-group"></i>
                                     <p>Order history</p>
                                 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-th-list"></i>
+                                    <p>LOG OUT</p>
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </li>
                         @endif
 

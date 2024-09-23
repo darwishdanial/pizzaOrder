@@ -46,8 +46,10 @@
             $pizzaStatus = "Preparing order";
         } elseif ($bill->status == 1) {
             $pizzaStatus = "Out for delivery";
-        } else {
+        } elseif ($bill->status == 2) {
             $pizzaStatus = "Order delivered";
+        }else{
+            $pizzaStatus = "Lebih";
         }
     @endphp
     
@@ -60,7 +62,7 @@
                                 <div class="your-order-info-wrap">
                                     <div class="your-order-info">
                                         <ul>
-                                            <li>PIZZA <span>Total</span></li>
+                                            <li>PIZZA (ID:{{$bill->id}}) <span>Total</span></li>
                                         </ul>
                                     </div>
                                     <div class="your-order-middle">
@@ -90,6 +92,12 @@
                                         </ul>
                                     </div>
                                 </div>
+
+                            @if($bill->status == 2)
+                                <div class="Place-order">
+                                    <a href="{{ route('clearBill', ['id' => $bill->id]) }}">Received</a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

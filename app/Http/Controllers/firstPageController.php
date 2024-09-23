@@ -254,6 +254,33 @@ class firstPageController extends Controller
         return view('pages.deliveryStatusPage', ['activeBills' => $activeBills]);
     }
 
+    public function clearBill($id){
+
+        $billUpdate = Bill::findOrFail($id);
+        $billUpdate-> is_active = false;
+        $billUpdate->save();
+        $user = auth()->user();
+        $activeBills = bill::where('user_id', $user->id)
+                   ->where('is_active', true)
+                   ->with('orders') // Eager load orders
+                   ->get();
+        return view('pages.deliveryStatusPage', ['activeBills' => $activeBills]);
+    }
+
+    public function viewBillHistory(){
+
+        $emptyBillHistory="";
+        $user = auth()->user();
+        $deactiveBills = bill::where('user_id', $user->id)
+                            ->where('is_active', false)
+                            ->with('orders')
+                            ->get();
+        if ($deactiveBills->isEmpty()) {
+            $emptyBillHistory = "yes";
+        }
+        return view('pages.orderHistoryPage', ['deactiveBills' => $deactiveBills, 'emptyBillHistory' => $emptyBillHistory]);
+    }
+
 
 }
 

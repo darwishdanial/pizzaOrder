@@ -36,7 +36,8 @@ Route::middleware(['auth.check','check.user.type'])->group(function () {
     Route::get('/order/{user}/cart',[firstPageController::class, 'cart'])->name('cart');  //cart page
     Route::get('/order/{user}/cart/checkout',[firstPageController::class, 'checkout'])->name('checkout');  //checkout page
     Route::get('/checkout-clear-item',[firstPageController::class, 'clearItem'])->name('clearItem');
-    
+    Route::get('/clear-bill/{id}',[firstPageController::class, 'clearBill'])->name('clearBill');
+    Route::get('/get-bill-history',[firstPageController::class, 'viewBillHistory'])->name('viewBillHistory');
 
 });
 
@@ -44,4 +45,10 @@ Route::middleware(['auth.check','check.user.type'])->group(function () {
 Route::middleware(['auth.check','prevent.customer'])->group(function () {
 
     Route::get('/staff-dashboard/{user}',[adminStaffController::class,'index'])->name('staffPage'); //admin & staff dashboard page
+    Route::post('/update-status/{id}', [adminStaffController::class, 'updateBillStatus'])->name('update.status');
+
+    Route::group(['middleware' => ['admin']], function () {
+        // Routes that only admins can access
+        Route::get('/admin/dashboard/bill-history', [adminStaffController::class, 'billHistory'])->name('admin.billHistory');
+    });
 });

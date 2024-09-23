@@ -6,44 +6,57 @@ use Illuminate\Http\Request;
 use App\Models\order;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\bill;
 
 class adminStaffController extends Controller
 {
     //
     public function index(){
 
-        // Retrieve users with the specified user type
-        
-
         $currentUser = Auth::user();
 
         if($currentUser->user_type == 0){
 
-            $customers = User::where('user_type', 2)->with('orders')->get();
             $staffCount = User::where('user_type', 1)->count();
-            $cutomerCount = 0;
-            $countOrder = 0;
-            $totalPayment = 0;
+            $cutomerCount = User::where('user_type', 2)->count();
+            $activeBills = bill::where('is_active', true)
+                            ->with('orders') 
+                            ->get();
+            $totalPayment = $activeBills->sum('total_price');
+            $billCount = $activeBills->count();
 
-            foreach($customers as $user){
-                $cutomerCount +=1;
-                
-                foreach($user->orders as $order){
-                    $countOrder += $order->qty;
-                    $totalPayment += $order->price;
-                }
-            }
-
-            return view('pages.staffDashboardPage', ['customers' => $customers, 'staffCount' => $staffCount,
-                        'cutomerCount' => $cutomerCount, 'countOrder' => $countOrder, 'totalPayment' => $totalPayment]);
+            return view('pages.staffDashboardPage', ['activeBills' => $activeBills, 'staffCount' => $staffCount,
+                         'cutomerCount' => $cutomerCount, 'totalPayment' => $totalPayment, 'billCount' => $billCount]);
 
 
         }else{
 
-            $customers = User::where('user_type', 2)->with('orders')->get();
+            $activeBills = bill::where('is_active', true)
+                            ->with('orders') // Eager load orders
+                            ->get();
 
-            return view('pages.staffDashboardPage', ['customers' => $customers]);
+            return view('pages.staffDashboardPage', ['activeBills' => $activeBills]);
         }
 
+    }
+
+    public function updateBillStatus(Request $request, $id){
+
+        $bill = Bill::findOrFail($id);
+        $newStatus = $request->input('status');
+        $currentStatus = $bill->status;
+        $bill->status = $newStatus +$currentStatus;
+        $bill->save();
+
+        return redirect()->back()->with('success', 'Pizza status updated successfully!');
+    }
+
+    public function billHistory(){
+        
+        $deactiveBills = bill::where('is_active', false)
+                            ->with('orders', 'user') 
+                            ->get();
+        
+        return view('pages.adminBillHistoryPage', ['deactiveBills' => $deactiveBills]);
     }
 }

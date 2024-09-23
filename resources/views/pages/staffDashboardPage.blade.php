@@ -5,6 +5,18 @@
 
 <!-- layout start -->
 
+<script>
+
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve flash message from the session
+        @if(session('success'))
+            alert('{{ session('success') }}');
+        @endif
+    });
+</script>
+
+
 <div class="container">
     <div class="page-inner">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
@@ -88,7 +100,7 @@
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
                                     <p class="card-category">Order</p>
-                                    <h4 class="card-title">{{ $countOrder ?? 0 }}</h4>
+                                    <h4 class="card-title">{{ $billCount ?? 0 }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -112,22 +124,48 @@
                             <table class="table align-items-center mb-0">
                                 <thead class="thead-light">
                                     <tr>
+                                        <th scope="col" class="text-end">Id</th>
                                         <th scope="col">Pizza</th>
-                                        <th scope="col" class="text-end">Name</th>
+                                        <th scope="col" class="text-end">Total</th>
                                         <th scope="col" class="text-end">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($customers as $user)
+                                @foreach($activeBills as $bill)
+
+                                        @php
+                                            $pizzaStatus = '';
+                                            if ($bill->status == 0) {
+                                                $pizzaStatus = "Start cooking";
+                                            } elseif ($bill->status == 1) {
+                                                $pizzaStatus = "Deliver";
+                                            } elseif ($bill->status == 2) {
+                                                $pizzaStatus = "Delivered";
+                                            }else{
+                                                $pizzaStatus = "Lebih";
+                                            }
+                                        @endphp
+
                                         <tr>
+                                            <td class="text-end">{{ $bill->id }}</td>
                                             <td>
-                                                @foreach($user->orders as $order)
+                                                @foreach($bill->orders as $order)
                                                     {{ $order->name }} x{{ $order->qty }} <br>
                                                 @endforeach
                                             </td>
-                                            <td class="text-end">{{ $user->name }}</td>
+                                            <td class="text-end">${{ $bill->total_price }}</td>
                                             <td class="text-end">
-                                                <span class="btn btn-primary btn-round">Start cooking</span>
+                                                @if($bill->status == 0 || $bill->status == 1)
+                                                    <!-- Show form with submit button for status 0 or 1 -->
+                                                    <form action="{{ route('update.status', $bill->id) }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="status" value="1"> <!-- Increment the status -->
+                                                        <button type="submit" class="btn btn-primary btn-round">{{ $pizzaStatus }}</button>
+                                                    </form>
+                                                @else
+                                                    <!-- Show normal button for status 2 -->
+                                                    <button class="btn btn-secondary btn-round" disabled>{{ $pizzaStatus }}</button>
+                                                @endif
                                             </td>
                                         </tr>
                                 @endforeach

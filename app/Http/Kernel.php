@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'auth.check' => \App\Http\Middleware\EnsureUserIsAuthenticated::class,
         'check.user.type' => \App\Http\Middleware\CheckUserType::class,
         'prevent.customer' => \App\Http\Middleware\PreventCustomerAccess::class,
+        'admin' => \App\Http\Middleware\CheckAdmin::class,
     ];
 }
