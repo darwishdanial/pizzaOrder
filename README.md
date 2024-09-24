@@ -4,7 +4,7 @@
 
 - Use case diagram
 
-![pizzaOrder documentation-use-case-diagram drawio](https://github.com/user-attachments/assets/6035c8e1-2f89-46ba-8cff-85e35ae30dda)
+![pizzaOrder documentation-use-case-diagram drawio (1)](https://github.com/user-attachments/assets/699f5e0c-301e-4c86-ad22-f15870c91ffb)
 
 - Entity relationship diagram
 
