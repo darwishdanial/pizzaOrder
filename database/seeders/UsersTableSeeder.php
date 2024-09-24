@@ -19,31 +19,31 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin@pizzaplz.com',
-                'password' => hash::make(123456),
+                'password' => hash::make(12345678),
                 'user_type' => 0,
             ],
             [
                 'name' => 'Ahmad Ammar',
                 'email' => 'ammar@pizzaplz.com',
-                'password' =>  hash::make(123456),
+                'password' =>  hash::make(12345678),
                 'user_type' => 1,
             ],
             [
                 'name' => 'Ahmad darwish',
                 'email' => 'darwish@pizzaplz.com',
-                'password' =>  hash::make(123456),
+                'password' =>  hash::make(12345678),
                 'user_type' => 1,
             ],
             [
                 'name' => 'Ahmad Aqil',
                 'email' => 'aqil@gmail.com',
-                'password' =>  hash::make(123456),
+                'password' =>  hash::make(12345678),
                 'user_type' => 2,
             ],
             [
                 'name' => 'masha',
                 'email' => 'masha@gmail.com',
-                'password' =>  hash::make(123456),
+                'password' =>  hash::make(12345678),
                 'user_type' => 2,
             ]
 
