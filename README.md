@@ -2,4 +2,7 @@
 
 ## Documentation
 
-- [Click here for use case and entity relationship diagram for this project](https://drive.google.com/file/d/1vN9HBH717AI1fA1n4g8mWWsUSukNs6Mc/view?usp=sharing).
+![pizzaOrder documentation-use-case-diagram drawio](https://github.com/user-attachments/assets/6035c8e1-2f89-46ba-8cff-85e35ae30dda)
+![pizzaOrder documentation-entity-relationship-diagram drawio](https://github.com/user-attachments/assets/5eb55466-7e79-4101-b330-f1a2a16a07c6)
+
+
