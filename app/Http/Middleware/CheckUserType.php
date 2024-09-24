@@ -22,7 +22,7 @@ class CheckUserType
        if ($user && ($user->user_type === 0 || $user->user_type === 1)) {
             // Avoid redirecting if the current request is already for the staff dashboard
             if (!$request->is('staff-dashboard')) {
-                return redirect()->route('staffPage', ['user' => $user->id])->withErrors('Access Denied');
+                return redirect()->route('staffPage', ['user' => $user->id])->with('error', 'You are not authorized to access this page.');;
             }
         }
 

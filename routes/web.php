@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\firstPageController;
+use App\Http\Controllers\customerController;
 use App\Http\Controllers\registerController;
 use App\Http\Controllers\adminStaffController;
 use App\Models\User;
@@ -17,27 +17,28 @@ use App\Models\User;
 |
 */
 
-Route::view('/','pages.firstPage')->name('firstPage');
-Route::view('/login-register','pages.login-register')->name('reg.log');
+Route::view('/','customerPage.firstPage')->name('firstPage');
+Route::view('/login-register','customerPage.loginRegister')->name('reg.log');
 Route::post('/login-register',[registerController::class, 'store'])->name('reg.log.user');
 Route::post('/logout', [registerController::class, 'logout'])->name('logout');
 Route::post('/login', [registerController::class, 'login'])->name('login');
 
 //only customer or guess can access order page
-Route::middleware(['check.user.type'])->group(function () {
-    Route::get('/order',[firstPageController::class, 'order'])->name('order');  //order page
+Route::middleware(['prevent.staffAdmin'])->group(function () {
+    Route::get('/order',[customerController::class, 'order'])->name('order');  //order page
 });
 
 //customer
-Route::middleware(['auth.check','check.user.type'])->group(function () {
+Route::middleware(['auth.check','prevent.staffAdmin'])->group(function () {
     
-    Route::post('/add-cart',[firstPageController::class, 'addToCart'])->name('add.cart');
-    Route::post('/update-cart',[firstPageController::class, 'updateCart'])->name('update.cart');
-    Route::get('/order/{user}/cart',[firstPageController::class, 'cart'])->name('cart');  //cart page
-    Route::get('/order/{user}/cart/checkout',[firstPageController::class, 'checkout'])->name('checkout');  //checkout page
-    Route::get('/checkout-clear-item',[firstPageController::class, 'clearItem'])->name('clearItem');
-    Route::get('/clear-bill/{id}',[firstPageController::class, 'clearBill'])->name('clearBill');
-    Route::get('/get-bill-history',[firstPageController::class, 'viewBillHistory'])->name('viewBillHistory');
+    Route::post('/add-cart',[customerController::class, 'addToCart'])->name('add.cart');
+    Route::post('/update-cart',[customerController::class, 'updateCart'])->name('update.cart');
+    Route::get('/order/{user}/cart',[customerController::class, 'cart'])->name('cart');  //cart page
+    Route::get('/order/{user}/cart/checkout',[customerController::class, 'checkout'])->name('checkout');  //checkout page
+    Route::get('/delivery-status',[customerController::class, 'viewDeliveryStatus'])->name('deliveryStatus'); //delivery status page
+    Route::get('/checkout-clear-item',[customerController::class, 'clearItem'])->name('clearItem');
+    Route::get('/clear-bill/{id}',[customerController::class, 'clearBill'])->name('clearBill');
+    Route::get('/get-bill-history',[customerController::class, 'viewBillHistory'])->name('viewBillHistory'); //bill history page
 
 });
 
@@ -49,18 +50,18 @@ Route::middleware(['auth.check','prevent.customer'])->group(function () {
 
     Route::group(['middleware' => ['admin']], function () {
         // Routes that only admins can access
-        Route::get('/admin/bill-history', [adminStaffController::class, 'billHistory'])->name('admin.billHistory');
+        Route::get('/admin/bill-history', [adminStaffController::class, 'billHistory'])->name('admin.billHistory'); //bill history page
 
-        Route::get('/admin/view-customer-list', [adminStaffController::class, 'viewCustomerList'])->name('admin.customerList');
+        Route::get('/admin/customer-view-list', [adminStaffController::class, 'viewCustomerList'])->name('admin.customerList'); //customer list page
         Route::delete('/admin/customers-delete/{id}', [adminStaffController::class, 'deleteCustomer'])->name('customers.destroy');
-        Route::get('/admin/customers-edit/{id}', [adminStaffController::class, 'editCustomer'])->name(name: 'customers.edit');
+        Route::get('/admin/customers-edit/{id}', [adminStaffController::class, 'editCustomer'])->name(name: 'customers.edit'); //customer edit page
         Route::put('/admin/customers-save/{id}', [adminStaffController::class, 'saveCustomer'])->name('customers.save');
 
-        Route::get('/admin/view-staff-list', [adminStaffController::class, 'viewStaffList'])->name('admin.staffList');
+        Route::get('/admin/staff-view-list', [adminStaffController::class, 'viewStaffList'])->name('admin.staffList'); //staff list page
         Route::delete('/admin/staff-delete/{id}', [adminStaffController::class, 'deleteStaff'])->name('staff.destroy');
-        Route::get('/admin/staff-edit/{id}', [adminStaffController::class, 'editStaff'])->name(name: 'staff.edit');
+        Route::get('/admin/staff-edit/{id}', [adminStaffController::class, 'editStaff'])->name(name: 'staff.edit'); //staff edit page
         Route::put('/admin/staff-update/{id}', [adminStaffController::class, 'saveStaff'])->name('staff.save');
         Route::post('/admin/staff-store', [adminStaffController::class, 'storeStaff'])->name('staff.store');
-        Route::view('/admin/create-staff','pages.staffCreatePage')->name('staff.view.store');
+        Route::view('/admin/staff-create','adminStaffPage.staffCreatePage')->name('staff.view.store'); //store staff page
     });
 });

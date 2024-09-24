@@ -83,8 +83,8 @@
                                     <li><a href="{{ route('order') }}">Order Page</a></li>
                                     <li><a href="{{ route('cart', ['user' => Auth::user()->id ?? 'guest']) }}">Cart Page</a></li>
                                     <li><a href="{{  route('checkout', ['user' => Auth::user()->id ?? 'guest']) }}">Checkout Page</a></li>
+                                    <li><a href="{{  route('deliveryStatus') }}">Delivery Page</a></li>
                                     <li><a href="{{ route('viewBillHistory') }}">Bill History Page</a></li>
-                                    <!-- <li><a href="{{  route('clearItem', ['user' => Auth::user()->id ?? 'guest']) }}">Delivery Page</a></li> -->
                                 </ul>
                             </li>
                             <li>

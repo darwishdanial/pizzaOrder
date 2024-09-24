@@ -28,7 +28,7 @@ class adminStaffController extends Controller
             $totalPayment = $activeBills->sum('total_price');
             $billCount = $activeBills->count();
 
-            return view('pages.staffDashboardPage', ['activeBills' => $activeBills, 'staffCount' => $staffCount,
+            return view('adminStaffPage.staffDashboardPage', ['activeBills' => $activeBills, 'staffCount' => $staffCount,
                          'cutomerCount' => $cutomerCount, 'totalPayment' => $totalPayment, 'billCount' => $billCount]);
 
 
@@ -38,7 +38,7 @@ class adminStaffController extends Controller
                             ->with('orders') // Eager load orders
                             ->get();
 
-            return view('pages.staffDashboardPage', ['activeBills' => $activeBills]);
+            return view('adminStaffPage.staffDashboardPage', ['activeBills' => $activeBills]);
         }
 
     }
@@ -60,13 +60,13 @@ class adminStaffController extends Controller
                             ->with('orders', 'user') 
                             ->get();
         
-        return view('pages.adminBillHistoryPage', ['deactiveBills' => $deactiveBills]);
+        return view('adminStaffPage.billHistoryPage', ['deactiveBills' => $deactiveBills]);
     }
     
     public function viewCustomerList(){
         $customer = User::where('user_type', 2)->get();
 
-        return view('pages.customerListPage', ['customer' => $customer]);
+        return view('adminStaffPage.customerListPage', ['customer' => $customer]);
     }
 
     public function deleteCustomer($id){
@@ -80,7 +80,7 @@ class adminStaffController extends Controller
     public function editCustomer($id){
         $customerEdit = user::findOrFail($id);
 
-        return view('pages.customerEditPage', ['customerEdit' => $customerEdit]);
+        return view('adminStaffPage.customerEditPage', ['customerEdit' => $customerEdit]);
     }
 
     public function saveCustomer(Request $request, $id){
@@ -95,7 +95,7 @@ class adminStaffController extends Controller
     public function viewStaffList(){
         $staff = User::where('user_type', 1)->get();
 
-        return view('pages.staffListPage', ['staff' => $staff]);
+        return view('adminStaffPage.staffListPage', ['staff' => $staff]);
     }
 
     public function deleteStaff($id){
@@ -108,7 +108,7 @@ class adminStaffController extends Controller
     public function editStaff($id){
         $staffEdit = user::findOrFail($id);
 
-        return view('pages.staffEditPage', ['staffEdit' => $staffEdit]);
+        return view('adminStaffPage.staffEditPage', ['staffEdit' => $staffEdit]);
     }
 
     public function saveStaff(Request $request, $id){

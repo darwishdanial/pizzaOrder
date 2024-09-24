@@ -26,15 +26,20 @@
 
 <script>
 
-    @if($errors->any())
-        alert('{{ $errors->first() }}');
-    @endif
-
     // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // Retrieve flash message from the session
         @if(session('message'))
             alert('{{ session('message') }}');
+        @endif
+
+        // Check if there is a flash message in the session and display it in an alert
+        @if(session('error'))
+            alert('{{ session('error') }}');
+        @endif
+
+        @if($errors->any())
+            alert('{{ $errors->first() }}');
         @endif
     });
 </script>

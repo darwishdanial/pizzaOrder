@@ -35,9 +35,22 @@
     </div>
 </div>
 
-
-
-
+@if ($emptyBill == "yes")
+<div class="checkout-main-area pb-130">
+    <div class="container">
+                <div class="col-lg-5">
+                    <div class="your-order-area">
+                        <h3>No orders. Continue ordering</h3>   
+                        <div class="Place-order">
+                            <a href="{{ route('firstPage') }}">Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@else
 @foreach ($activeBills as $bill)
 
     @php
@@ -105,6 +118,8 @@
         </div>
     </div>
 @endforeach
+@endif
+
 </html>
 
 @endsection

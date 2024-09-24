@@ -22,7 +22,7 @@ class PreventCustomerAccess
 
         // If the user is not a staff or admin (user_type 0 or 1), redirect them
         if ($user && $user->user_type== 2) {
-            return redirect()->route('firstPage')->withErrors('Access Denied!');
+            return redirect()->route('firstPage')->with('error', 'You are not authorized to access this page.');
         }
         return $next($request);
     }

@@ -8,7 +8,7 @@ use App\Models\order;
 use App\Models\bill;
 use Illuminate\Support\Facades\Auth;
 
-class firstPageController extends Controller
+class customerController extends Controller
 {
     public $pizzaName = ['Small Normal Cheese', 'Small Extra Cheese', 'Small Pepperoni Normal Cheese', 'Small Pepperoni Extra Cheese', 
                         'Medium Normal Cheese', 'Medium Extra Cheese','Medium Pepperoni Normal Cheese', 'Medium Pepperoni  Cheese', 
@@ -31,17 +31,6 @@ class firstPageController extends Controller
         ['name' => 'Large Pepperoni Extra Cheese', 'price' => 43],
     ];
     
- 
-    // public function index(){
-    //     // if (Session::has('pizzaQty') && !is_null(Session::get('pizzaQty'))) {
-    //     //     $pizzaQty = Session::get('pizzaQty');
-    //     // } else {
-    //     //     Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
-    //     // }
-    //     // Session::put('pizzaQty',[0,0,0,0, 0,0,0,0, 0,0,0,0]);
-    //     return view('pages.firstPage');
-    // }
-
     public function order(){
 
 
@@ -54,7 +43,7 @@ class firstPageController extends Controller
             $pizzaQty = 0;
         }
 
-        return view('pages.orderPage',['pizzaQty' => $pizzaQty]);
+        return view('customerPage.orderPage',['pizzaQty' => $pizzaQty]);
     }
 
     public function addToCart(Request $request) {
@@ -118,7 +107,7 @@ class firstPageController extends Controller
             ]);
 
         }
-        // Redirect back to the order page after adding to cart
+
         return redirect()->route('order');
     }
 
@@ -131,7 +120,7 @@ class firstPageController extends Controller
                     ->where('is_active', true)
                     ->get();
                     
-        return view('pages.cartPage', ['pizzaOrder' => $pizzaOrder]);
+        return view('customerPage.cartPage', ['pizzaOrder' => $pizzaOrder]);
     }
 
     public function updateCart(Request $request)
@@ -207,10 +196,26 @@ class firstPageController extends Controller
         }
         $totalPrice = $pizzaOrder->sum('price');
 
-        return view('pages.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice, 'emptyPizza' => $emptyPizza, 'pizzaStatus' => $pizzaStatus]);
+        return view('customerPage.checkoutPage', ['pizzaOrder' => $pizzaOrder, 'totalPrice' => $totalPrice, 'emptyPizza' => $emptyPizza, 'pizzaStatus' => $pizzaStatus]);
     }
 
-    public function clearItem(Request $request){
+    public function viewDeliveryStatus(){
+
+        $user = auth()->user();
+        $emptyBill = "no";
+        $activeBills = bill::where('user_id', $user->id)
+                   ->where('is_active', true)
+                   ->with('orders') // Eager load orders
+                   ->get();
+        if ($activeBills->isEmpty()) {
+            $activeBills = collect($activeBills ? [$activeBills] : []);
+            $emptyBill = "yes";
+        }
+
+        return view('customerPage.deliveryStatusPage', ['activeBills' => $activeBills, 'emptyBill' => $emptyBill]);
+    }
+
+    public function clearItem(){
 
         $user = auth()->user();
         $activeBills = Order::where('user_id', $user->id)
@@ -235,23 +240,9 @@ class firstPageController extends Controller
                 $pizza->is_active = false;
                 $pizza->save();
             }
-
-            $activeBills = bill::where('user_id', $user->id)
-                            ->where('is_active', true)
-                            ->with('orders') // Eager load orders
-                            ->get();
-
-        }else{
-
-            $activeBills = bill::where('user_id', $user->id)
-                   ->where('is_active', true)
-                   ->with('orders') // Eager load orders
-                   ->get();
-            
-
         }
-        
-        return view('pages.deliveryStatusPage', ['activeBills' => $activeBills]);
+
+        return redirect()->route('viewBillHistory');
     }
 
     public function clearBill($id){
@@ -259,12 +250,8 @@ class firstPageController extends Controller
         $billUpdate = Bill::findOrFail($id);
         $billUpdate-> is_active = false;
         $billUpdate->save();
-        $user = auth()->user();
-        $activeBills = bill::where('user_id', $user->id)
-                   ->where('is_active', true)
-                   ->with('orders') // Eager load orders
-                   ->get();
-        return view('pages.deliveryStatusPage', ['activeBills' => $activeBills]);
+
+        return redirect()->route('viewBillHistory');
     }
 
     public function viewBillHistory(){
@@ -278,7 +265,8 @@ class firstPageController extends Controller
         if ($deactiveBills->isEmpty()) {
             $emptyBillHistory = "yes";
         }
-        return view('pages.orderHistoryPage', ['deactiveBills' => $deactiveBills, 'emptyBillHistory' => $emptyBillHistory]);
+
+        return view('customerPage.billHistoryPage', ['deactiveBills' => $deactiveBills, 'emptyBillHistory' => $emptyBillHistory]);
     }
 
 
