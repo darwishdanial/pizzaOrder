@@ -2,7 +2,7 @@
 
 ## Documentation
 
-- [Click here for use case and entity relationship diagram for this project]([https://laravel.com/docs/routing](https://drive.google.com/file/d/1vN9HBH717AI1fA1n4g8mWWsUSukNs6Mc/view?usp=sharing)).
+- [Click here for use case and entity relationship diagram for this project](https://drive.google.com/file/d/1vN9HBH717AI1fA1n4g8mWWsUSukNs6Mc/view?usp=sharing).
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
