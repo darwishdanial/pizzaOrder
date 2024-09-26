@@ -269,6 +269,8 @@ class customerController extends Controller
         return view('customerPage.billHistoryPage', ['deactiveBills' => $deactiveBills, 'emptyBillHistory' => $emptyBillHistory]);
     }
 
+    //from test branch
+    //from test branch 2
 
 }
 
